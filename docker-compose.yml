@@ -1,0 +1,64 @@
+version: '3.7'
+
+services:
+  # Servicio Traefik
+  traefik:
+    image: traefik:v2.2
+    container_name: traefik
+    restart: always
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=aliste.claudio@gmail.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"  # Habilita la API de Traefik
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./letsencrypt:/letsencrypt"
+    networks:
+      - web
+
+  # Servicio Geinet
+  geinet:
+    image: nginx:alpine
+    container_name: geinet
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.geinet.rule=Host(`geinet.cl`)"
+      - "traefik.http.routers.geinet.entrypoints=websecure"
+      - "traefik.http.routers.geinet.tls.certresolver=myresolver"
+      - "traefik.http.middlewares.geinet-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.geinet.middlewares=geinet-redirect"
+
+    networks:
+      - web
+    volumes:
+      - ./geinet/index.html:/usr/share/nginx/html/index.html
+
+  # Servicio ChileFPV
+  chilefpv:
+    image: nginx:alpine
+    container_name: chilefpv
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.chilefpv.rule=Host(`chilefpv.cl`)"
+      - "traefik.http.routers.chilefpv.entrypoints=websecure"
+      - "traefik.http.routers.chilefpv.tls.certresolver=myresolver"
+      - "traefik.http.middlewares.chilefpv-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.chilefpv.middlewares=chilefpv-redirect"
+
+    networks:
+      - web
+    volumes:
+      - ./chilefpv/index.html:/usr/share/nginx/html/index.html
+
+networks:
+  web:
+    external: true
+

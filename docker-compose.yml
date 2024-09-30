@@ -40,7 +40,7 @@ services:
   # Servicio Geinet
   geinet:
     image: nginx:alpine
-    container_name: geinet
+    container_name: geinet #flag de conexión al contenedor
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.geinet.rule=Host(`geinet.cl`)"
@@ -56,7 +56,7 @@ services:
   # Servicio ChileFPV
   chilefpv:
     image: nginx:alpine
-    container_name: chilefpv
+    container_name: chilefpv #flag de conexión al contenedor
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.chilefpv.rule=Host(`chilefpv.cl`)" #aca debemos editar el nombre del dominio que se bucsara, gunto con todo los nombres indicando dominio correcto
@@ -72,7 +72,7 @@ services:
   # Servicio para el subdominio
   sitio1:
     image: nginx:alpine
-    container_name: sitio1
+    container_name: sitio1 #flag de conexión al contenedor
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.sitio1.rule=Host(`sitio1.chilefpv.cl`)" #este es el caso agregar wildcard a la confiuracion

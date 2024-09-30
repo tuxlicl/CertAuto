@@ -3,13 +3,6 @@
 #version: 2.1
 #
 #Disclaimer: si le generan una mejora al archivo favor enviar para actualizar en los repositorios, poner comentarios acá abajo con la mejora y sus datos de contacto.
-#
-#
-#
-#
-#
-#
-#
 
 version: '3.7'
 
@@ -32,7 +25,7 @@ services:
       - "443:443"
       - "8080:8080"  # Habilita la API de Traefik
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro" #las primeras lineas indican nombre de carpeta y el archivo que se cargara en el contenedor // The first lines indicate folder name and the file to be loaded in the container
       - "./letsencrypt:/letsencrypt"
     networks:
       - web
@@ -40,10 +33,10 @@ services:
   # Servicio Geinet
   geinet:
     image: nginx:alpine
-    container_name: geinet #flag de conexión al contenedor
+    container_name: geinet #flag de conexión al contenedor, importante que este nombre se debe modificar en todo el volumen en cada linea para que apunte al contenedor // flag of connection to the container, important that this name must be modified throughout the volume in each line to point to the container.
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.geinet.rule=Host(`geinet.cl`)"
+      - "traefik.http.routers.geinet.rule=Host(`geinet.cl`)" #En este apartado debemos modificar el dominio que se necesita pasar a let'sncrypt // In this section we must modify the domain that needs to be passed to let'sncrypt.
       - "traefik.http.routers.geinet.entrypoints=websecure"
       - "traefik.http.routers.geinet.tls.certresolver=myresolver"
       - "traefik.http.middlewares.geinet-redirect.redirectscheme.scheme=https"
@@ -51,7 +44,7 @@ services:
     networks:
       - web
     volumes:
-      - ./geinet/index.html:/usr/share/nginx/html/index.html
+      - ./geinet/index.html:/usr/share/nginx/html/index.html #las primeras lineas indican nombre de carpeta y el archivo que se cargara en el contenedor // The first lines indicate folder name and the file to be loaded in the container
 
   # Servicio ChileFPV
   chilefpv:
@@ -59,7 +52,7 @@ services:
     container_name: chilefpv #flag de conexión al contenedor
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.chilefpv.rule=Host(`chilefpv.cl`)" #aca debemos editar el nombre del dominio que se bucsara, gunto con todo los nombres indicando dominio correcto
+      - "traefik.http.routers.chilefpv.rule=Host(`chilefpv.cl`)" #En este apartado debemos modificar el dominio que se necesita pasar a let'sncrypt // In this section we must modify the domain that needs to be passed to let'sncrypt.
       - "traefik.http.routers.chilefpv.entrypoints=websecure"
       - "traefik.http.routers.chilefpv.tls.certresolver=myresolver"
       - "traefik.http.middlewares.chilefpv-redirect.redirectscheme.scheme=https"
@@ -67,7 +60,7 @@ services:
     networks:
       - web
     volumes:
-      - ./chilefpv/index.html:/usr/share/nginx/html/index.html
+      - ./chilefpv/index.html:/usr/share/nginx/html/index.html #las primeras lineas indican nombre de carpeta y el archivo que se cargara en el contenedor // The first lines indicate folder name and the file to be loaded in the container
 
   # Servicio para el subdominio
   sitio1:
@@ -75,7 +68,7 @@ services:
     container_name: sitio1 #flag de conexión al contenedor
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.sitio1.rule=Host(`sitio1.chilefpv.cl`)" #este es el caso agregar wildcard a la confiuracion
+      - "traefik.http.routers.sitio1.rule=Host(`sitio1.chilefpv.cl`)" #En este apartado debemos modificar el dominio que se necesita pasar a let'sncrypt // In this section we must modify the domain that needs to be passed to let'sncrypt.
       - "traefik.http.routers.sitio1.entrypoints=websecure"
       - "traefik.http.routers.sitio1.tls.certresolver=myresolver"
       - "traefik.http.middlewares.sitio1-redirect.redirectscheme.scheme=https"
@@ -83,7 +76,7 @@ services:
     networks:
       - web
     volumes:
-      - ./sitio1/index.html:/usr/share/nginx/html/index.html  #las ptimeras lineas indican nombre de carpeta y el archivo que se cargara en el contenedor
+      - ./sitio1/index.html:/usr/share/nginx/html/index.html  #las primeras lineas indican nombre de carpeta y el archivo que se cargara en el contenedor // The first lines indicate folder name and the file to be loaded in the container
 
 networks:
   web:

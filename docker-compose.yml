@@ -9,7 +9,7 @@ version: '3.7'
 services:
   # Servicio Traefik
   traefik:
-    image: traefik:v2.2
+    image: traefik:v2.11.10
     container_name: traefik
     restart: always
     command:
@@ -27,6 +27,8 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro" #las primeras lineas indican nombre de carpeta y el archivo que se cargara en el contenedor // The first lines indicate folder name and the file to be loaded in the container
       - "./letsencrypt:/letsencrypt"
+      - "./conf/dynamic.yml:/dynamic.yml:ro"  
+        
     networks:
       - web
 

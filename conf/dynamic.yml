@@ -1,0 +1,71 @@
+http:
+  routers:
+    geinet:
+      rule: "Host(`geinet.cl`)"
+      entryPoints:
+        - web
+        - websecure
+      service: geinet
+      tls:
+        certResolver: le
+      middlewares:
+        - https-redirect
+
+    chilifpv:
+      rule: "Host(`chilefpv.cl`)"
+      entryPoints:
+        - web
+        - websecure
+      service: chilifpv
+      tls:
+        certResolver: le
+      middlewares:
+        - https-redirect
+
+    sitio1:
+      rule: "Host(`sitio1.chilefpv.cl`)"
+      entryPoints:
+        - web
+        - websecure
+      service: sitio1
+      tls:
+        certResolver: le
+      middlewares:
+        - https-redirect
+
+  services:
+    geinet:
+      loadBalancer:
+        servers:
+          - url: "http://geinet:80"
+
+    chilifpv:
+      loadBalancer:
+        servers:
+          - url: "http://chilifpv:80"
+
+    sitio1:
+      loadBalancer:
+        servers:
+          - url: "http://sitio1.chilefpv.cl:80"
+
+  middlewares:
+    https-redirect:
+      redirectScheme:
+        scheme: "https"
+        permanent: true
+
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+
+certificatesResolvers:
+  le:
+    acme:
+      email: "aliste.claudio@gmail.com"  # Cambia esto a tu email real
+      storage: "/letsencrypt/acme.json"
+      httpChallenge:
+        entryPoint: web
+
